@@ -1,8 +1,9 @@
-# 0003: Vim 完全再現ではなく最小サブセットを実装し、MVP は1行バッファとする
+# Vim 完全再現ではなく最小サブセットを実装し、MVP は1行バッファとする
 
-- Status: accepted
 - Date: 2026-07-03
-- Tags: architecture, scope
+- Type: ADR
+- Status: Active
+- Author: masahiro.kasatani
 
 ## Context
 
@@ -18,13 +19,17 @@
 - Phase 3 以降: 複数行、`dd`/`yy`、`p`、`.`、Visual mode
 - サブセット内の挙動は実際の Vim を正とする（`f` は inclusive、`t` は exclusive 等）
 
-## Alternatives Considered
-
-- **最初から複数行バッファ** — `j`/`k`/行末処理/削除範囲の扱いが一気に複雑化する。`df"`、`ciw` 等の練習は1行で成立するため却下
-- **CodeMirror の Vim mode に編集処理を委譲** — ゲームとして「入力を解釈し、採点し、解説する」必要があり、ブラックボックスに委譲すると採点・解説が作れないため却下
-
 ## Consequences
 
 - エディタ実装の泥沼を回避し、学習ゲームの本体（お題・判定・解説）に注力できる
 - 「Vim と挙動が違う」という指摘には「サブセット外」と線引きで答えられる
 - 複数行対応時にバッファモデルの拡張（`lines: string[]` + `Position`）が必要になるが、これは織り込み済みの負債とする
+
+## Alternatives Considered
+
+- **最初から複数行バッファ** — `j`/`k`/行末処理/削除範囲の扱いが一気に複雑化する。`df"`、`ciw` 等の練習は1行で成立するため却下
+- **CodeMirror の Vim mode に編集処理を委譲** — ゲームとして「入力を解釈し、採点し、解説する」必要があり、ブラックボックスに委譲すると採点・解説が作れないため却下
+
+## Related Files
+
+<!-- List files related to this decision (e.g. internal/search/search.go). -->

@@ -1,8 +1,9 @@
-# 0002: 技術スタックとして TypeScript + React + Vite（Web）を採用する
+# 技術スタックとして TypeScript + React + Vite（Web）を採用する
 
-- Status: accepted
 - Date: 2026-07-03
-- Tags: tech-stack, architecture
+- Type: ADR
+- Status: Active
+- Author: masahiro.kasatani
 
 ## Context
 
@@ -15,6 +16,13 @@ vimgram は既存プロジェクトと無関係の新規プロジェクトであ
 - 状態管理: React state のみ（MVP では Zustand 等を導入しない）
 - テスト: Vitest
 - エディタ表示: 自作（CodeMirror 6 は将来検討。ただし CodeMirror の Vim mode に処理を任せる設計は採らない — ゲーム側で入力を解釈・採点・解説する必要があるため）
+
+## Consequences
+
+- URL 共有だけで誰でも遊べる（学習ゲームとして最大のリーチ）
+- CodeMirror・i18n・学習履歴ダッシュボード等、Web 生態系の資産を将来利用できる
+- コアエンジンのテスト容易性は Go と互角（→ ADR `core-engine-separation` でコア分離により担保）
+- ネイティブ配布・オフライン動作は失う（PWA 化で将来カバー可能）
 
 ## Alternatives Considered
 
@@ -31,9 +39,6 @@ vimgram は既存プロジェクトと無関係の新規プロジェクトであ
 - `go install` 一発の配布も Vim ユーザー層には摩擦にならない
 - ただし「URL を送れば誰でも遊べる」リーチの広さを優先し、Web 構成を採用した
 
-## Consequences
+## Related Files
 
-- URL 共有だけで誰でも遊べる（学習ゲームとして最大のリーチ）
-- CodeMirror・i18n・学習履歴ダッシュボード等、Web 生態系の資産を将来利用できる
-- コアエンジンのテスト容易性は Go と互角（→ ADR 0004 でコア分離により担保）
-- ネイティブ配布・オフライン動作は失う（PWA 化で将来カバー可能）
+<!-- List files related to this decision (e.g. internal/search/search.go). -->
