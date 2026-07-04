@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level4-da-paren-basic",
+	"title": {
+		"en": "Delete parentheses and their contents",
+		"ja": "括弧ごと削除する"
+	},
+	"prompt": {
+		"en": "Delete the parentheses themselves, along with their contents, using da).",
+		"ja": "da) を使って括弧とその中身をまとめて削除してください。"
+	},
+	"initial": { "text": "foo(bar, baz)qux", "cursor": 5, "mode": "normal" },
+	"expected": { "text": "fooqux" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["da)"],
+	"tags": ["textObject", "paren", "comparison"],
+	"difficulty": 4
+}

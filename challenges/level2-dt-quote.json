@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level2-dt-quote",
+	"title": {
+		"en": "Delete up to a quote (t)",
+		"ja": "クォートの手前まで削除する（t）"
+	},
+	"prompt": {
+		"en": "Delete up to, but not including, the first double quote. Compare this with the f version.",
+		"ja": "最初のダブルクォートの手前までを削除してください。f を使った問題と比較してみましょう。"
+	},
+	"initial": { "text": "say \"hello\" now", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "\"hello\" now" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["dt\""],
+	"tags": ["delete", "till", "quote", "comparison"],
+	"difficulty": 2
+}

@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level1-db-basic",
+	"title": {
+		"en": "Delete backward to the start of a word",
+		"ja": "単語の先頭まで後方削除する"
+	},
+	"prompt": {
+		"en": "From inside the second word, delete backward to its start.",
+		"ja": "2番目の単語の内側から、その単語の先頭まで後方に削除してください。"
+	},
+	"initial": { "text": "hello world", "cursor": 8, "mode": "normal" },
+	"expected": { "text": "hello rld" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["db"],
+	"tags": ["delete", "word", "backward"],
+	"difficulty": 1
+}

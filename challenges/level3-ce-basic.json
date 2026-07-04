@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-ce-basic",
+	"title": {
+		"en": "Change through the end of a word",
+		"ja": "単語の末尾まで変更する"
+	},
+	"prompt": {
+		"en": "Change \"hi\" to \"hello\" using ce, keeping the spaces on both sides.",
+		"ja": "ce を使って \"hi\" を \"hello\" に変更してください。両側の空白はそのまま残します。"
+	},
+	"initial": { "text": "say hi to bob", "cursor": 4, "mode": "normal" },
+	"expected": { "text": "say hello to bob", "mode": "normal" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["cehello<Esc>"],
+	"tags": ["change", "word"],
+	"difficulty": 3
+}

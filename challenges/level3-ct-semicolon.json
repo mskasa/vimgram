@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-ct-semicolon",
+	"title": {
+		"en": "Rename taro to jiro (ct;)",
+		"ja": "taro を jiro に変更する（ct;）"
+	},
+	"prompt": {
+		"en": "Change \"taro\" to \"jiro\" using ct; instead. The semicolon is kept this time, so it's one key shorter than the cf; version.",
+		"ja": "今度は ct; を使って \"taro\" を \"jiro\" に変更してください。セミコロンは残るので、cf; 版より1キー短くなります。"
+	},
+	"initial": { "text": "name = taro;", "cursor": 7, "mode": "normal" },
+	"expected": { "text": "name = jiro;", "mode": "normal" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["ct;jiro<Esc>"],
+	"tags": ["change", "till", "comparison"],
+	"difficulty": 3
+}

@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level4-daw-leading-space-fallback",
+	"title": {
+		"en": "aw falls back to leading space",
+		"ja": "aw の後続空白がない場合は先行空白を対象にする"
+	},
+	"prompt": {
+		"en": "\"hello\" here has no trailing space (it's followed by \"!\"), so daw falls back to including the leading space instead.",
+		"ja": "\"hello\" の後ろには空白がなく（次は \"!\"）、この場合 daw は代わりに先行する空白を対象にします。"
+	},
+	"initial": { "text": " hello!", "cursor": 1, "mode": "normal" },
+	"expected": { "text": "!" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["daw"],
+	"tags": ["textObject", "word", "aw-fallback"],
+	"difficulty": 4
+}

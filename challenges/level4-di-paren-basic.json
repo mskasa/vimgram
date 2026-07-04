@@ -1,0 +1,15 @@
+{
+	"$schema": "./schema.json",
+	"id": "level4-di-paren-basic",
+	"title": { "en": "Delete inside parentheses", "ja": "括弧の内側を削除する" },
+	"prompt": {
+		"en": "Delete the contents of the parentheses using di). Compare with the da) challenge on the same text.",
+		"ja": "di) を使って括弧の中身を削除してください。同じ文の da) の問題と比べてみましょう。"
+	},
+	"initial": { "text": "foo(bar, baz)qux", "cursor": 5, "mode": "normal" },
+	"expected": { "text": "foo()qux" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["di)"],
+	"tags": ["textObject", "paren", "comparison"],
+	"difficulty": 4
+}

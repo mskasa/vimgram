@@ -1,0 +1,15 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-daw-basic",
+	"title": { "en": "Delete a word (around)", "ja": "単語を削除する（around）" },
+	"prompt": {
+		"en": "Delete the word under the cursor plus its surrounding space using daw. Note there's only one space left, unlike the diw version.",
+		"ja": "daw を使ってカーソル位置の単語を、周囲の空白ごと削除してください。diw の場合と違い、空白は1つだけ残ります。"
+	},
+	"initial": { "text": "hello world foo", "cursor": 8, "mode": "normal" },
+	"expected": { "text": "hello foo" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["daw"],
+	"tags": ["textObject", "word", "comparison"],
+	"difficulty": 3
+}

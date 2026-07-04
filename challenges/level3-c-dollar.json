@@ -1,0 +1,15 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-c-dollar",
+	"title": { "en": "Change to end of line", "ja": "行末まで変更する" },
+	"prompt": {
+		"en": "Change \"wrong\" at the end of the line to \"42\" using c$.",
+		"ja": "c$ を使って行末の \"wrong\" を \"42\" に変更してください。"
+	},
+	"initial": { "text": "total = wrong", "cursor": 8, "mode": "normal" },
+	"expected": { "text": "total = 42", "mode": "normal" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["c$42<Esc>"],
+	"tags": ["change", "dollar"],
+	"difficulty": 3
+}

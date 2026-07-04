@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level4-diw-on-space",
+	"title": {
+		"en": "iw when the cursor is on whitespace",
+		"ja": "カーソルが空白上にあるときの iw"
+	},
+	"prompt": {
+		"en": "The cursor is on a run of spaces. diw targets the whitespace itself in that case.",
+		"ja": "カーソルは連続した空白の上にあります。この場合 diw は空白そのものを対象にします。"
+	},
+	"initial": { "text": "a    b", "cursor": 2, "mode": "normal" },
+	"expected": { "text": "ab" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["diw"],
+	"tags": ["textObject", "word", "space"],
+	"difficulty": 4
+}

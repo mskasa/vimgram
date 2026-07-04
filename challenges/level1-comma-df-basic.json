@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level1-comma-df-basic",
+	"title": {
+		"en": "Warm-up: delete through a comma",
+		"ja": "ウォームアップ：カンマまで削除する"
+	},
+	"prompt": {
+		"en": "Delete up to and including the first comma.",
+		"ja": "最初のカンマを含めて削除してください。"
+	},
+	"initial": { "text": "apple, banana", "cursor": 0, "mode": "normal" },
+	"expected": { "text": " banana" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["df,"],
+	"tags": ["delete", "find"],
+	"difficulty": 1
+}

@@ -1,0 +1,15 @@
+{
+	"$schema": "./schema.json",
+	"id": "level1-x-delete-char",
+	"title": { "en": "Delete a single character", "ja": "1文字だけ削除する" },
+	"prompt": {
+		"en": "Delete the character under the cursor.",
+		"ja": "カーソル位置の1文字を削除してください。"
+	},
+	"initial": { "text": "xylophone", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "ylophone" },
+	"constraints": { "timeLimitSec": 15 },
+	"examples": ["x"],
+	"tags": ["delete", "x"],
+	"difficulty": 1
+}

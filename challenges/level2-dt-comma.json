@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level2-dt-comma",
+	"title": {
+		"en": "Delete up to a comma (t)",
+		"ja": "カンマの手前まで削除する（t）"
+	},
+	"prompt": {
+		"en": "Delete up to, but not including, the first comma. Compare this with the f version.",
+		"ja": "最初のカンマの手前までを削除してください（カンマ自体は残します）。f を使った問題と比較してみましょう。"
+	},
+	"initial": { "text": "one, two, three", "cursor": 0, "mode": "normal" },
+	"expected": { "text": ", two, three" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["dt,"],
+	"tags": ["delete", "till", "comparison"],
+	"difficulty": 2
+}

@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level1-count-3x",
+	"title": {
+		"en": "Delete 3 characters with a count",
+		"ja": "count を使って3文字削除する"
+	},
+	"prompt": {
+		"en": "Delete the first 3 characters using a count.",
+		"ja": "count を使って最初の3文字を削除してください。"
+	},
+	"initial": { "text": "abcdef", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "def" },
+	"constraints": { "timeLimitSec": 15 },
+	"examples": ["3x"],
+	"tags": ["delete", "count", "x"],
+	"difficulty": 1
+}

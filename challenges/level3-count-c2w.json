@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-count-c2w",
+	"title": {
+		"en": "Change 2 words with a count",
+		"ja": "count を使って2単語変更する"
+	},
+	"prompt": {
+		"en": "Change the first two words to \"both\" using c2w. The cw special case still applies with a count.",
+		"ja": "c2w を使って最初の2単語を \"both\" に変更してください。count が付いても cw の特例は適用されます。"
+	},
+	"initial": { "text": "one two three four", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "both three four", "mode": "normal" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["c2wboth<Esc>"],
+	"tags": ["change", "word", "count"],
+	"difficulty": 3
+}

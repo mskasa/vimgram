@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-cw-basic",
+	"title": {
+		"en": "Change a word (cw keeps the space)",
+		"ja": "単語を変更する（cwは空白を残す）"
+	},
+	"prompt": {
+		"en": "Change the first word to \"goodbye\". Compare the result with the dw challenge on the same text: cw does not swallow the trailing space.",
+		"ja": "最初の単語を \"goodbye\" に変更してください。同じ文への dw の問題と結果を比べてみましょう。cw は後ろの空白を飲み込みません。"
+	},
+	"initial": { "text": "hello world", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "goodbye world", "mode": "normal" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["cwgoodbye<Esc>"],
+	"tags": ["change", "word", "insert", "comparison"],
+	"difficulty": 3
+}

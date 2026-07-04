@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level4-ct-quote-rename",
+	"title": {
+		"en": "Rename inside quotes (ct\")",
+		"ja": "クォート内の文字列を変更する（ct\"）"
+	},
+	"prompt": {
+		"en": "Change \"taro\" to \"jiro\" inside the quotes using ct\".",
+		"ja": "ct\" を使ってクォート内の \"taro\" を \"jiro\" に変更してください。"
+	},
+	"initial": { "text": "let x = \"taro\";", "cursor": 9, "mode": "normal" },
+	"expected": { "text": "let x = \"jiro\";", "mode": "normal" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["ct\"jiro<Esc>"],
+	"tags": ["change", "till", "quote"],
+	"difficulty": 4
+}

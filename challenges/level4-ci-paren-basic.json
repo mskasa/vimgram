@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level4-ci-paren-basic",
+	"title": {
+		"en": "Change the contents of parentheses",
+		"ja": "括弧の中身を変更する"
+	},
+	"prompt": {
+		"en": "Change the argument inside the parentheses to \"new\" using ci).",
+		"ja": "ci) を使って括弧の中の引数を \"new\" に変更してください。"
+	},
+	"initial": { "text": "print(old)", "cursor": 7, "mode": "normal" },
+	"expected": { "text": "print(new)", "mode": "normal" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["ci)new<Esc>"],
+	"tags": ["textObject", "paren"],
+	"difficulty": 4
+}

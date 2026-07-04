@@ -20,6 +20,7 @@ vimgram は、お題（プロンプト）が出題され、制限時間内に該
 ## 技術スタック
 
 - TypeScript + React + Vite
+- Node: 22（`.node-version` で固定。CI と Cloudflare Pages のビルド設定もこれに合わせる）
 - パッケージマネージャ: **pnpm**
 - 状態管理: React state のみ（MVP では Zustand 等は導入しない）
 - テスト: Vitest

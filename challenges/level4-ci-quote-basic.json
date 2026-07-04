@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level4-ci-quote-basic",
+	"title": {
+		"en": "Change quoted text (inner)",
+		"ja": "クォート内の文字列を変更する（inner）"
+	},
+	"prompt": {
+		"en": "Change the text inside the double quotes to \"new\" using ci\". Compare with the ca\" challenge on the same text.",
+		"ja": "ci\" を使ってダブルクォート内の文字列を \"new\" に変更してください。同じ文の ca\" の問題と比べてみましょう。"
+	},
+	"initial": { "text": "say \"old\" now", "cursor": 5, "mode": "normal" },
+	"expected": { "text": "say \"new\" now", "mode": "normal" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["ci\"new<Esc>"],
+	"tags": ["textObject", "quote", "comparison"],
+	"difficulty": 4
+}

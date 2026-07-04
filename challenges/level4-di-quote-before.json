@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level4-di-quote-before",
+	"title": {
+		"en": "di\" works even before the quote",
+		"ja": "カーソルが引用符の手前でも di\" は効く"
+	},
+	"prompt": {
+		"en": "The cursor is before the first quote on the line. di\" still finds and deletes the quoted text (Vim searches forward in this case).",
+		"ja": "カーソルは行内の最初のクォートより手前にあります。この場合 di\" は前方検索してクォート内の文字列を見つけ、削除します。"
+	},
+	"initial": { "text": "  \"hello\" end", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "  \"\" end" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["di\""],
+	"tags": ["textObject", "quote", "forward-search"],
+	"difficulty": 4
+}

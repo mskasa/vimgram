@@ -1,0 +1,15 @@
+{
+	"$schema": "./schema.json",
+	"id": "level1-d-dollar",
+	"title": { "en": "Delete to end of line", "ja": "行末まで削除する" },
+	"prompt": {
+		"en": "Delete from the cursor to the end of the line.",
+		"ja": "カーソル位置から行末までを削除してください。"
+	},
+	"initial": { "text": "keep this delete", "cursor": 10, "mode": "normal" },
+	"expected": { "text": "keep this " },
+	"constraints": { "timeLimitSec": 15 },
+	"examples": ["d$"],
+	"tags": ["delete", "dollar"],
+	"difficulty": 1
+}

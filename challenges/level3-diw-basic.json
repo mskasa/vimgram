@@ -1,0 +1,15 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-diw-basic",
+	"title": { "en": "Delete a word (inner)", "ja": "単語を削除する（inner）" },
+	"prompt": {
+		"en": "Delete just the word under the cursor using diw. Compare with the daw challenge on the same text.",
+		"ja": "diw を使ってカーソル位置の単語だけを削除してください。同じ文の daw の問題と比べてみましょう。"
+	},
+	"initial": { "text": "hello world foo", "cursor": 8, "mode": "normal" },
+	"expected": { "text": "hello  foo" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["diw"],
+	"tags": ["textObject", "word", "comparison"],
+	"difficulty": 3
+}

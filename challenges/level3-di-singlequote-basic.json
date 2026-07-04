@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-di-singlequote-basic",
+	"title": {
+		"en": "Delete inside single quotes",
+		"ja": "シングルクォート内を削除する"
+	},
+	"prompt": {
+		"en": "Delete the text inside the single quotes using di'.",
+		"ja": "di' を使ってシングルクォート内の文字列を削除してください。"
+	},
+	"initial": { "text": "say 'hi' now", "cursor": 5, "mode": "normal" },
+	"expected": { "text": "say '' now" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["di'"],
+	"tags": ["textObject", "quote"],
+	"difficulty": 3
+}

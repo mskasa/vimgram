@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level4-ca-quote-basic",
+	"title": {
+		"en": "Change quoted text (around)",
+		"ja": "クォート内の文字列を変更する（around）"
+	},
+	"prompt": {
+		"en": "ca\" deletes the quotes themselves too, plus the space after them. Replace with apple (typing a trailing space yourself) to get \"say apple now\".",
+		"ja": "ca\" はクォート自体と、その後ろの空白も削除します。自分でスペースを打ちながら apple と入力し、\"say apple now\" にしてください。"
+	},
+	"initial": { "text": "say \"old\" now", "cursor": 5, "mode": "normal" },
+	"expected": { "text": "say apple now", "mode": "normal" },
+	"constraints": { "timeLimitSec": 30 },
+	"examples": ["ca\"apple <Esc>"],
+	"tags": ["textObject", "quote", "comparison"],
+	"difficulty": 4
+}

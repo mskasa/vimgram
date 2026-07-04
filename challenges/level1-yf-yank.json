@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level1-yf-yank",
+	"title": {
+		"en": "Yank up to and including a comma",
+		"ja": "カンマまでヤンクする"
+	},
+	"prompt": {
+		"en": "Yank up to and including the comma, without changing the text.",
+		"ja": "テキストを変更せずに、カンマまでを含めてヤンクしてください。"
+	},
+	"initial": { "text": "grab this, thanks", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "grab this, thanks", "yankRegister": "grab this," },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["yf,"],
+	"tags": ["yank", "find"],
+	"difficulty": 1
+}

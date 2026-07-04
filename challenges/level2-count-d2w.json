@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level2-count-d2w",
+	"title": {
+		"en": "Delete 2 words with a count",
+		"ja": "count を使って2単語削除する"
+	},
+	"prompt": {
+		"en": "Delete the first two words using a count.",
+		"ja": "count を使って最初の2単語を削除してください。"
+	},
+	"initial": { "text": "one two three four", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "three four" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["d2w"],
+	"tags": ["delete", "word", "count", "comparison"],
+	"difficulty": 2
+}

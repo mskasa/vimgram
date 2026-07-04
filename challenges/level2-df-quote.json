@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level2-df-quote",
+	"title": {
+		"en": "Delete through a quote (f)",
+		"ja": "クォートまで削除する（f）"
+	},
+	"prompt": {
+		"en": "Delete up to and including the first double quote.",
+		"ja": "最初のダブルクォートを含めて削除してください。"
+	},
+	"initial": { "text": "say \"hello\" now", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "hello\" now" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["df\""],
+	"tags": ["delete", "find", "quote", "comparison"],
+	"difficulty": 2
+}

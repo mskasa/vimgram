@@ -1,0 +1,15 @@
+{
+	"$schema": "./schema.json",
+	"id": "level1-w-navigate",
+	"title": { "en": "Navigate word by word", "ja": "単語単位で移動する" },
+	"prompt": {
+		"en": "Move the cursor to the start of the third word, without changing the text.",
+		"ja": "テキストを変更せずに、カーソルを3番目の単語の先頭まで移動してください。"
+	},
+	"initial": { "text": "one two three", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "one two three", "cursor": 8 },
+	"constraints": { "timeLimitSec": 15 },
+	"examples": ["ww"],
+	"tags": ["motion", "word", "navigation"],
+	"difficulty": 1
+}

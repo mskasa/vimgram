@@ -1,0 +1,15 @@
+{
+	"$schema": "./schema.json",
+	"id": "level1-yw-yank",
+	"title": { "en": "Yank a word", "ja": "単語をヤンクする" },
+	"prompt": {
+		"en": "Yank (copy) the first word without changing the text.",
+		"ja": "最初の単語をヤンク（コピー）してください。テキストは変更しません。"
+	},
+	"initial": { "text": "copy me please", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "copy me please", "yankRegister": "copy " },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["yw"],
+	"tags": ["yank", "word", "yw"],
+	"difficulty": 1
+}

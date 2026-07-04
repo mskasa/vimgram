@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-cf-semicolon",
+	"title": {
+		"en": "Rename taro to jiro (cf;)",
+		"ja": "taro を jiro に変更する（cf;）"
+	},
+	"prompt": {
+		"en": "Change \"taro\" to \"jiro\" using cf; . Note the semicolon is deleted too (inclusive), so you must retype it.",
+		"ja": "cf; を使って \"taro\" を \"jiro\" に変更してください。セミコロンも含めて削除されるので、打ち直しが必要です。"
+	},
+	"initial": { "text": "name = taro;", "cursor": 7, "mode": "normal" },
+	"expected": { "text": "name = jiro;", "mode": "normal" },
+	"constraints": { "timeLimitSec": 25 },
+	"examples": ["cf;jiro;<Esc>"],
+	"tags": ["change", "find", "comparison"],
+	"difficulty": 3
+}

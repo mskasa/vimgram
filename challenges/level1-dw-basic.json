@@ -1,0 +1,15 @@
+{
+	"$schema": "./schema.json",
+	"id": "level1-dw-basic",
+	"title": { "en": "Delete a word", "ja": "単語を削除する" },
+	"prompt": {
+		"en": "Delete the first word, including the space after it.",
+		"ja": "最初の単語を、後ろの空白ごと削除してください。"
+	},
+	"initial": { "text": "hello world", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "world" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["dw"],
+	"tags": ["delete", "word", "dw"],
+	"difficulty": 1
+}
