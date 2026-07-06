@@ -68,7 +68,10 @@ export function PlaygroundPage() {
 	};
 
 	return (
-		<main style={{ fontFamily: "monospace", padding: "2rem" }}>
+		<main
+			className="vg-container"
+			style={{ fontFamily: "monospace", padding: "2rem 0" }}
+		>
 			<h1>vimgram playground</h1>
 			<p>
 				Step 6: <code>h l 0 $ w e b</code> / <code>f{"{char}"}</code>{" "}

@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-yiw-basic",
+	"title": {
+		"en": "Yank a word (text object)",
+		"ja": "単語をヤンクする（テキストオブジェクト）"
+	},
+	"prompt": {
+		"en": "Yank just the word under the cursor using yiw, without changing the text. Compare with the yaw challenge on the same text.",
+		"ja": "yiw を使ってカーソル位置の単語だけをヤンクしてください。テキストは変更しません。同じ文の yaw の問題と比べてみましょう。"
+	},
+	"initial": { "text": "copy the word here", "cursor": 9, "mode": "normal" },
+	"expected": { "text": "copy the word here", "yankRegister": "word" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["yiw"],
+	"tags": ["yank", "textObject", "word", "comparison"],
+	"difficulty": 3
+}

@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level3-yaw-basic",
+	"title": {
+		"en": "Yank a word and its space (text object)",
+		"ja": "単語を空白ごとヤンクする（テキストオブジェクト）"
+	},
+	"prompt": {
+		"en": "Yank the word under the cursor plus its trailing space using yaw. Compare with the yiw challenge on the same text.",
+		"ja": "yaw を使ってカーソル位置の単語を、後続の空白ごとヤンクしてください。同じ文の yiw の問題と比べてみましょう。"
+	},
+	"initial": { "text": "copy the word here", "cursor": 9, "mode": "normal" },
+	"expected": { "text": "copy the word here", "yankRegister": "word " },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["yaw"],
+	"tags": ["yank", "textObject", "word", "comparison"],
+	"difficulty": 3
+}

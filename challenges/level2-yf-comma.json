@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level2-yf-comma",
+	"title": {
+		"en": "Yank through a comma (f)",
+		"ja": "カンマまでヤンクする（f）"
+	},
+	"prompt": {
+		"en": "Yank up to and including the first comma, without changing the text.",
+		"ja": "テキストを変更せずに、最初のカンマまでを含めてヤンクしてください。"
+	},
+	"initial": { "text": "one, two, three", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "one, two, three", "yankRegister": "one," },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["yf,"],
+	"tags": ["yank", "find", "comparison"],
+	"difficulty": 2
+}

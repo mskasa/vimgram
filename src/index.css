@@ -1,7 +1,163 @@
 :root {
-	color-scheme: light dark;
+	color-scheme: dark;
+
+	/* "Twilight" theme design tokens (see CLAUDE.md "UI 操作" and
+	   docs/decisions/2026-07-04-twilight-design-tokens.md). Single theme, no
+	   light/dark toggle - every color in the app should reference one of
+	   these, never a hardcoded hex value. */
+	--bg-base: #181530;
+	--bg-header: #1e1a3d;
+	--bg-card: #201c40;
+	--bg-card-active: #2a2350;
+	--bg-key: #2b2654;
+	--border-base: #383163;
+	--border-strong: #4a4188;
+	--accent: #eda35f;
+	--accent-soft: #f6d9b4;
+	--success: #9ad6b9;
+	--warn-star: #f2b877;
+	--text-primary: #f2efff;
+	--text-body: #c4bde8;
+	--text-secondary: #aaa3d6;
+	--text-muted: #8d86bd;
+
+	/* Typography scale, rem-based (16px root). */
+	--font-title: 2.25rem; /* 36px */
+	--font-heading: 1.125rem; /* 18px */
+	--font-card-heading: 1.0625rem; /* 17px */
+	--font-body: 0.9375rem; /* 15px */
+	--font-keyhint: 0.875rem; /* 14px */
+	--font-keycap: 0.8125rem; /* 13px */
+}
+
+* {
+	box-sizing: border-box;
 }
 
 body {
 	margin: 0;
+	background: var(--bg-base);
+	color: var(--text-primary);
+	font-size: var(--font-body);
+	line-height: 1.7;
+}
+
+h1 {
+	font-size: var(--font-title);
+	color: var(--text-primary);
+}
+
+h2 {
+	font-size: var(--font-heading);
+	color: var(--text-primary);
+}
+
+h3 {
+	font-size: var(--font-card-heading);
+	color: var(--text-primary);
+}
+
+p,
+li {
+	color: var(--text-body);
+}
+
+a {
+	color: var(--accent);
+}
+
+code,
+kbd {
+	font-family: monospace;
+}
+
+button {
+	font-family: inherit;
+	font-size: inherit;
+	color: var(--text-primary);
+	background: var(--bg-card);
+	border: 1px solid var(--border-base);
+	border-radius: 0.375rem;
+	padding: 0.4rem 0.8rem;
+	cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+	border-color: var(--border-strong);
+}
+
+/* `disabled` marks "the currently active choice" on the nav/locale toggles
+   (see App.tsx / LocaleToggle.tsx), not "unavailable" - styled as a selected
+   state (accent), not greyed out. */
+button:disabled {
+	cursor: default;
+	opacity: 1;
+	background: var(--bg-card-active);
+	border-color: var(--accent);
+	color: var(--accent-soft);
+}
+
+/* Content max-width (see CLAUDE.md "UI 操作"): every screen's content is
+   centered within this, even though a full-width background bar (e.g. the
+   nav header) may span the whole viewport. */
+.vg-container {
+	max-width: 1200px;
+	margin-inline: auto;
+	padding-inline: 2rem;
+}
+
+/* "Keycap" key hints (see CLAUDE.md "UI 操作"): the key is the primary visual
+   element, clicking one fires the same action as pressing the key. Clickable
+   affordance is limited to a hover/focus color swap - deliberately not
+   styled like a standalone button. */
+.vg-keyhint-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	font-size: var(--font-keyhint);
+	margin: 0.75rem 0;
+}
+
+.vg-keycap {
+	all: unset;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	color: var(--text-secondary);
+}
+
+.vg-keycap-key {
+	font-family: monospace;
+	font-size: var(--font-keycap);
+	background: var(--bg-key);
+	color: var(--text-primary);
+	border: 1px solid var(--border-strong);
+	border-bottom-width: 3px;
+	border-radius: 4px;
+	padding: 0.1rem 0.5rem;
+}
+
+/* The primary ("Enter"-style) action in a key hint row is the only keycap
+   allowed to use the warm accent - see CLAUDE.md "UI 操作": accent is
+   reserved for "selected, primary key, Star, Great" only. */
+.vg-keycap-key--primary {
+	border-color: var(--accent);
+	color: var(--accent-soft);
+}
+
+.vg-keycap:hover .vg-keycap-key,
+.vg-keycap:focus-visible .vg-keycap-key {
+	background: var(--border-strong);
+}
+
+.vg-keycap:hover .vg-keycap-key--primary,
+.vg-keycap:focus-visible .vg-keycap-key--primary {
+	background: var(--accent);
+	color: var(--bg-base);
+}
+
+.vg-keycap:focus-visible {
+	outline: 1px solid var(--border-strong);
+	outline-offset: 2px;
 }

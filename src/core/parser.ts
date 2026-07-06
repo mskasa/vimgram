@@ -1,3 +1,4 @@
+import { tokenizeKeys } from "./keys";
 import type { Motion, TextObjectTarget } from "./motions";
 
 // Grammar: [count] operator [count] motion (see CLAUDE.md), plus a bare
@@ -265,8 +266,13 @@ function parseCharMotionPending(
 export function parseCommands(keys: string): ParsedCommand[] {
 	let state = initialInputState;
 	const commands: ParsedCommand[] = [];
-	for (const key of keys) {
-		const result = parseKey(state, key);
+	for (const token of tokenizeKeys(keys)) {
+		// The parser only understands single-character keys (see runKeys in
+		// execute.ts) - a stray bracket-notation token (e.g. "<Esc>") here means
+		// the caller passed Insert-mode text, which this function has no concept
+		// of; skip it rather than feeding it in char-by-char.
+		if (token.length !== 1) continue;
+		const result = parseKey(state, token);
 		state = result.state;
 		if (result.command) {
 			commands.push(result.command);

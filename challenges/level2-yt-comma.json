@@ -1,0 +1,18 @@
+{
+	"$schema": "./schema.json",
+	"id": "level2-yt-comma",
+	"title": {
+		"en": "Yank up to a comma (t)",
+		"ja": "カンマの手前までヤンクする（t）"
+	},
+	"prompt": {
+		"en": "Yank up to, but not including, the first comma. Compare this with the yf, version.",
+		"ja": "最初のカンマの手前までをヤンクしてください。yf, を使った問題と比較してみましょう。"
+	},
+	"initial": { "text": "one, two, three", "cursor": 0, "mode": "normal" },
+	"expected": { "text": "one, two, three", "yankRegister": "one" },
+	"constraints": { "timeLimitSec": 20 },
+	"examples": ["yt,"],
+	"tags": ["yank", "till", "comparison"],
+	"difficulty": 2
+}

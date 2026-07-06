@@ -35,6 +35,12 @@ describe("d + motion", () => {
 		expect(result.cursor).toBe(0);
 	});
 
+	it("dw on the last word of the line consumes the whole word (Vim's word-motion special case)", () => {
+		const result = runKeys(createBuffer("hello world", 6), "dw");
+		expect(result.text).toBe("hello ");
+		expect(result.cursor).toBe(5);
+	});
+
 	it("d$ deletes to end of line and clamps the cursor to the new last char", () => {
 		const result = runKeys(createBuffer("hello world", 6), "d$");
 		expect(result.text).toBe("hello ");

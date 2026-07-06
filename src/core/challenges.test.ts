@@ -1,6 +1,9 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import { z } from "zod";
 import { createBuffer } from "./buffer";
-import { idealKeyCount, loadChallenges } from "./challenges";
+import { challengeSchema, idealKeyCount, loadChallenges } from "./challenges";
 import { runKeys } from "./execute";
 import { matchesExpected } from "./judge";
 import { tokenizeKeys } from "./keys";
@@ -33,5 +36,20 @@ describe("challenges/ data", () => {
 		expect(idealKeyCount(challenge)).toBe(
 			tokenizeKeys(challenge.examples[0]).length,
 		);
+	});
+});
+
+describe("challenges/schema.json", () => {
+	// Guards against drift in the *other* direction from the examples[0]
+	// checks above: someone changes challengeSchema (src/core/challenges.ts)
+	// but forgets to run `pnpm run schema`, leaving the committed JSON Schema
+	// stale relative to what actually validates challenge JSON files.
+	it("matches what `pnpm run schema` would currently generate", () => {
+		const expected = z.toJSONSchema(challengeSchema);
+		const schemaPath = fileURLToPath(
+			new URL("../../challenges/schema.json", import.meta.url),
+		);
+		const actual: unknown = JSON.parse(readFileSync(schemaPath, "utf-8"));
+		expect(actual).toEqual(expected);
 	});
 });

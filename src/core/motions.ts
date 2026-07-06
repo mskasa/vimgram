@@ -61,16 +61,24 @@ export function isBlank(text: string, cursor: number): boolean {
 	return classify(text[cursor]) === "space";
 }
 
-function wordForward(text: string, cursor: number): number {
+// `hitEnd` is true when the scan ran off the end of the text rather than
+// landing on an actual next word - i.e. there is no next word, only the
+// buffer boundary. See resolveMotion's "w" case for why this matters.
+function wordForward(
+	text: string,
+	cursor: number,
+): { to: number; hitEnd: boolean } {
 	const len = text.length;
-	if (len === 0) return 0;
+	if (len === 0) return { to: 0, hitEnd: true };
 	let i = cursor;
 	const startClass = classify(text[i]);
 	if (startClass !== "space") {
 		while (i < len && classify(text[i]) === startClass) i++;
 	}
 	while (i < len && classify(text[i]) === "space") i++;
-	return i >= len ? lastCharIndex(text) : i;
+	return i >= len
+		? { to: lastCharIndex(text), hitEnd: true }
+		: { to: i, hitEnd: false };
 }
 
 function wordEnd(text: string, cursor: number): number {
@@ -322,8 +330,16 @@ export function resolveMotion(
 			return { to: 0, inclusive: false, found: true };
 		case "$":
 			return { to: lastCharIndex(text), inclusive: true, found: true };
-		case "w":
-			return { to: wordForward(text, cursor), inclusive: false, found: true };
+		case "w": {
+			const { to, hitEnd } = wordForward(text, cursor);
+			// Vim's operator+w special case: when the word moved over is the last
+			// one on the line, the operated range extends through its last
+			// character instead of stopping one short (see :help word-motions).
+			// `inclusive` is only consulted by resolveRange (operators) - bare
+			// cursor motion (executeBareMotion) reads only `to`, so this doesn't
+			// change where a plain "w" lands the cursor.
+			return { to, inclusive: hitEnd, found: true };
+		}
 		case "e":
 			return { to: wordEnd(text, cursor), inclusive: true, found: true };
 		case "b":
