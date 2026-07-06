@@ -49,7 +49,8 @@ export type UIStringKey =
 	| "keyHint.skip"
 	| "keyHint.giveUp"
 	| "keyHint.next"
-	| "keyHint.retry";
+	| "keyHint.retry"
+	| "keyHint.back";
 
 // en is required (base language). ja is a Partial - any key left out here
 // falls back to en (see CLAUDE.md "多言語対応").
@@ -109,6 +110,7 @@ const en: Record<UIStringKey, string> = {
 	"keyHint.giveUp": "give up",
 	"keyHint.next": "next",
 	"keyHint.retry": "retry",
+	"keyHint.back": "back",
 };
 
 const ja: Partial<Record<UIStringKey, string>> = {
@@ -168,6 +170,7 @@ const ja: Partial<Record<UIStringKey, string>> = {
 	"keyHint.giveUp": "ギブアップ",
 	"keyHint.next": "次へ",
 	"keyHint.retry": "リトライ",
+	"keyHint.back": "前の問題へ",
 };
 
 export function t(key: UIStringKey, locale: Locale): string {

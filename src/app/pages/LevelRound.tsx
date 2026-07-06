@@ -99,6 +99,11 @@ export function LevelRound({
 
 	const retry = () => setRetryNonce((n) => n + 1);
 
+	// Undoes an accidental skip (or just revisits an earlier challenge) by
+	// stepping index back - no Attempt is recorded for this, since arriving
+	// at a challenge isn't a round outcome. A no-op at index 0.
+	const back = () => setIndex((i) => Math.max(i - 1, 0));
+
 	return (
 		<>
 			<p>
@@ -114,6 +119,7 @@ export function LevelRound({
 				challenge={challenge}
 				onNext={next}
 				onRetry={retry}
+				onBack={back}
 				onExitToMenu={onExitToMenu}
 				streak={streak}
 				onRoundEnd={handleRoundEnd}
@@ -131,6 +137,7 @@ function ChallengeRound({
 	challenge,
 	onNext,
 	onRetry,
+	onBack,
 	onExitToMenu,
 	streak,
 	onRoundEnd,
@@ -138,6 +145,7 @@ function ChallengeRound({
 	challenge: Challenge;
 	onNext: () => void;
 	onRetry: () => void;
+	onBack: () => void;
 	onExitToMenu: () => void;
 	streak: number;
 	onRoundEnd: (outcome: RoundOutcome) => void;
@@ -274,6 +282,8 @@ function ChallengeRound({
 	onNextRef.current = onNext;
 	const onRetryRef = useRef(onRetry);
 	onRetryRef.current = onRetry;
+	const onBackRef = useRef(onBack);
+	onBackRef.current = onBack;
 	const onExitToMenuRef = useRef(onExitToMenu);
 	onExitToMenuRef.current = onExitToMenu;
 	const skipRef = useRef(skip);
@@ -316,17 +326,18 @@ function ChallengeRound({
 				return;
 			}
 
-			// routing.target === "command": either "skip"/"giveUp" or Normal/
-			// Insert-mode entry. Both meta-keys only apply in Normal mode with no
-			// operator/f/t/text-object pending (inputState.phase === "idle") -
-			// "s" and "?" are both valid f/t *target characters*, so a player
-			// mid-motion (e.g. just pressed "f") still gets real Vim behavior
-			// instead of having their search hijacked. In Insert mode neither is
-			// consulted at all, so both are typed as literal replacement text.
-			// Esc keeps its existing meaning here (Insert-mode exit, or a no-op
-			// cancel of a pending Normal-mode count/operator) - it is never
-			// routed to onExitToMenu while playing, only once a result is
-			// showing (see routeKeydown/resolveResultKey).
+			// routing.target === "command": either a playing meta-key
+			// (skip/giveUp/retry/back) or Normal/Insert-mode entry. Meta-keys
+			// only apply in Normal mode with no operator/f/t/text-object pending
+			// (inputState.phase === "idle") - "s"/"?"/"r" are all valid f/t
+			// *target characters*, so a player mid-motion (e.g. just pressed
+			// "f") still gets real Vim behavior instead of having their search
+			// hijacked. In Insert mode none of these is consulted at all, so
+			// they're all typed as literal replacement text. Esc keeps its
+			// existing meaning here (Insert-mode exit, or a no-op cancel of a
+			// pending Normal-mode count/operator) - it is never routed to
+			// onExitToMenu while playing, only once a result is showing (see
+			// routeKeydown/resolveResultKey).
 			const buffer = bufferRef.current;
 			if (buffer.mode === "normal" && inputStateRef.current.phase === "idle") {
 				const playingAction = resolvePlayingKey({
@@ -341,6 +352,16 @@ function ChallengeRound({
 				if (playingAction === "giveUp") {
 					event.preventDefault();
 					giveUpRef.current();
+					return;
+				}
+				if (playingAction === "retry") {
+					event.preventDefault();
+					onRetryRef.current();
+					return;
+				}
+				if (playingAction === "back") {
+					event.preventDefault();
+					onBackRef.current();
 					return;
 				}
 			}
@@ -412,7 +433,16 @@ function ChallengeRound({
 
 	return (
 		<>
-			<p>{resolveLocalizedText(challenge.prompt, locale)}</p>
+			<p
+				style={{
+					fontSize: "var(--font-prompt)",
+					fontWeight: 600,
+					color: "var(--text-highlight)",
+					margin: "0.5rem 0 1rem",
+				}}
+			>
+				{resolveLocalizedText(challenge.prompt, locale)}
+			</p>
 			<p>
 				<strong>{buffer.mode === "insert" ? "INSERT" : "NORMAL"}</strong>
 			</p>
@@ -444,6 +474,8 @@ function ChallengeRound({
 					items={[
 						{ keyLabel: "s", label: t("keyHint.skip"), onActivate: skip },
 						{ keyLabel: "?", label: t("keyHint.giveUp"), onActivate: giveUp },
+						{ keyLabel: "r", label: t("keyHint.retry"), onActivate: onRetry },
+						{ keyLabel: "[", label: t("keyHint.back"), onActivate: onBack },
 					]}
 				/>
 			)}

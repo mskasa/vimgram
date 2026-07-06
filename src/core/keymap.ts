@@ -37,15 +37,21 @@ export function resolveResultKey({
 	return null;
 }
 
-export type PlayingKeyAction = "skip" | "giveUp";
+export type PlayingKeyAction = "skip" | "giveUp" | "retry" | "back";
 
 // Only meaningful in Normal mode, and only while no operator/f/t/text-object
 // is pending (see LevelRound.tsx, which checks buffer.mode and
-// inputState.phase === "idle" before calling this). Neither "s" nor "?" is
-// used by any Vim command in this subset while idle, but both ARE valid f/t
+// inputState.phase === "idle" before calling this). None of these is used by
+// any Vim command in this subset while idle, but "s"/"?"/"r" ARE valid f/t
 // *target characters* (e.g. "f?" searches for a literal "?") - gating on the
 // idle phase means a player mid-motion still gets the real Vim behavior, and
-// in Insert mode these are never consulted at all (typed as literal text).
+// in Insert mode none of these is consulted at all (typed as literal text).
+// "r" doubles as "retry" here (not just on the result screen, see
+// resolveResultKey) so a mid-play mistake can be cleared without waiting for
+// a timeout or judge() to end the round. "[" is "go back to the previous
+// challenge" (e.g. to undo an accidental skip) - chosen over "p" because "p"
+// (paste) is an explicitly-listed future Vim feature in CLAUDE.md's スコープ外,
+// while bracket motions are not, making "[" the safer long-term choice.
 export function resolvePlayingKey({
 	key,
 	hasModifier,
@@ -53,6 +59,8 @@ export function resolvePlayingKey({
 	if (hasModifier) return null;
 	if (key === "s" || key === "S") return "skip";
 	if (key === "?") return "giveUp";
+	if (key === "r" || key === "R") return "retry";
+	if (key === "[") return "back";
 	return null;
 }
 

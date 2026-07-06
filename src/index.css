@@ -20,11 +20,17 @@
 	--text-body: #c4bde8;
 	--text-secondary: #aaa3d6;
 	--text-muted: #8d86bd;
+	/* A sky-cyan "info" accent, not the warm --accent family (see CLAUDE.md
+	   "UI 操作": accent stays reserved for selected/primary-key/Star/Great).
+	   Used to make the challenge prompt pop without borrowing that meaning. */
+	--text-highlight: #8fe0f2;
 
 	/* Typography scale, rem-based (16px root). */
 	--font-title: 2.25rem; /* 36px */
 	--font-heading: 1.125rem; /* 18px */
 	--font-card-heading: 1.0625rem; /* 17px */
+	--font-prompt: 1.25rem; /* 20px - the challenge prompt, deliberately louder
+	                           than a card heading since it's what to do right now */
 	--font-body: 0.9375rem; /* 15px */
 	--font-keyhint: 0.875rem; /* 14px */
 	--font-keycap: 0.8125rem; /* 13px */

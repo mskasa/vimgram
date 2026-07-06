@@ -39,6 +39,14 @@ describe("resolvePlayingKey", () => {
 		expect(resolvePlayingKey({ key: "?", hasModifier: false })).toBe("giveUp");
 	});
 
+	it.each(["r", "R"] as const)("maps %s to retry", (key) => {
+		expect(resolvePlayingKey({ key, hasModifier: false })).toBe("retry");
+	});
+
+	it("maps [ to back", () => {
+		expect(resolvePlayingKey({ key: "[", hasModifier: false })).toBe("back");
+	});
+
 	it("ignores unmapped keys", () => {
 		expect(resolvePlayingKey({ key: "d", hasModifier: false })).toBeNull();
 	});
@@ -46,6 +54,8 @@ describe("resolvePlayingKey", () => {
 	it("ignores mapped keys when a modifier is held", () => {
 		expect(resolvePlayingKey({ key: "s", hasModifier: true })).toBeNull();
 		expect(resolvePlayingKey({ key: "?", hasModifier: true })).toBeNull();
+		expect(resolvePlayingKey({ key: "r", hasModifier: true })).toBeNull();
+		expect(resolvePlayingKey({ key: "[", hasModifier: true })).toBeNull();
 	});
 });
 
