@@ -194,6 +194,87 @@ const singleDescriptions = {
 	},
 } satisfies Record<Locale, Record<"x", SingleDescriber>>;
 
+const notFoundCharDescriptions: Record<Locale, (char: string) => string> = {
+	en: (char) => `"${char}" not found`,
+	ja: (char) => `「${char}」が見つかりません`,
+};
+const notFoundTargetDescriptions: Record<Locale, string> = {
+	en: "no matching target found",
+	ja: "対象が見つかりません",
+};
+
+// Only ever meaningful for a command that actually failed to resolve (see
+// execute.ts/motions.ts: only f/t and text objects can produce
+// found: false - h/l/0/$/w/e/b always resolve, so callers only reach for
+// this on those two motion shapes).
+export function explainFailure(command: ParsedCommand, locale: Locale): string {
+	const motion =
+		command.type === "operatorMotion" || command.type === "motion"
+			? command.motion
+			: undefined;
+	if (motion?.type === "f" || motion?.type === "t") {
+		return notFoundCharDescriptions[locale](motion.char);
+	}
+	return notFoundTargetDescriptions[locale];
+}
+
+// One entry in the Playground's auto-generated key cheat-sheet (see
+// KeyCheatSheet.tsx). `displayKey` differs from `key` only for f/t, whose
+// argument character is shown as "·" to signal "this key takes a target
+// character" without picking an arbitrary example.
+export type CheatSheetItem = {
+	key: string;
+	displayKey: string;
+	description: string;
+};
+
+const CHAR_MOTION_TYPES: ReadonlySet<string> = new Set(["f", "t"]);
+
+// Reads straight from motionDescriptions/operatorDescriptions/targetLabels
+// (above) instead of a hand-maintained key list (see CLAUDE.md "UI 操作":
+// 早見表は explain 辞書から自動生成する) - adding a motion/operator/text
+// object target to those dictionaries makes it appear here for free.
+export function listOperators(locale: Locale): CheatSheetItem[] {
+	const operators = Object.entries(operatorDescriptions[locale]).map(
+		([key, description]) => ({ key, displayKey: key, description }),
+	);
+	const singles = Object.entries(singleDescriptions[locale]).map(
+		([key, describer]) => ({
+			key,
+			displayKey: key,
+			description: describer({ count: undefined }),
+		}),
+	);
+	return [...operators, ...singles];
+}
+
+export function listMotions(locale: Locale): CheatSheetItem[] {
+	return Object.entries(motionDescriptions[locale]).map(([key, describer]) => {
+		const needsChar = CHAR_MOTION_TYPES.has(key);
+		return {
+			key,
+			displayKey: needsChar ? `${key}·` : key,
+			description: describer({
+				count: undefined,
+				char: needsChar ? "·" : undefined,
+			}),
+		};
+	});
+}
+
+export function listTextObjects(locale: Locale): CheatSheetItem[] {
+	const targets = Object.keys(targetLabels[locale]) as TextObjectTarget[];
+	const scopes = ["inner", "around"] as const;
+	return scopes.flatMap((scope) =>
+		targets.map((target) => ({
+			key: `${scope}-${target}`,
+			displayKey:
+				(scope === "inner" ? "i" : "a") + TEXT_OBJECT_TARGET_KEY[target],
+			description: describeTextObject(scope, target, locale),
+		})),
+	);
+}
+
 function describeMotion(
 	motion: Motion,
 	count: number | undefined,

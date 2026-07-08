@@ -19,7 +19,7 @@
 
 ## Consequences
 
-- `RoundVerdict`（`src/core/score.ts`）に `"gaveUp"` を追加し、`nextStreak` は `timeout` と同様にリセットする
+- `RoundVerdict`（当時 `src/core/score.ts`、現在は `src/core/streak.ts` — スコア制廃止に伴い分離。ADR `2026-07-07-remove-scoring-show-elapsed-time.md` 参照）に `"gaveUp"` を追加し、`nextStreak` は `timeout` と同様にリセットする
 - `ChallengeRound` の `endRound`（`src/app/pages/LevelRound.tsx`）は `success` の判定を `verdict !== "timeout"` から `verdict === "great" || verdict === "verbose"` という明示的な包含チェックに変更した。以後 `RoundResult` に新しい失敗系 verdict を足すたびに、ここを触らなくても自動的に失敗扱いになる
 - スキップは既存の「即座に次へ」という体験を変えずに、記録だけを追加した（`recordAttempt` を直接呼び、`endRound` は経由しない - リザルト画面を出さないため）
 - `?` を「idle 限定の meta キー」として扱う設計は、副次的に既存の `s`（skip）にも同じ制約を後付けで適用する形になった。以前は `s` がどんな Normal mode 状態でも即座にスキップとして解釈されており、`f?`/`fs` のような（現状データには存在しない）お題を将来追加すると壊れる潜在バグだったため、このタイミングで合わせて修正した
@@ -32,8 +32,8 @@
 ## Related Files
 
 - src/core/attempt.ts
-- src/core/score.ts
-- src/core/score.test.ts
+- src/core/streak.ts
+- src/core/streak.test.ts
 - src/core/keymap.ts
 - src/core/keymap.test.ts
 - src/app/pages/LevelRound.tsx

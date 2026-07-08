@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
 	type InputState,
 	initialInputState,
+	isUnsupportedIdleKey,
 	type ParsedCommand,
 	parseKey,
 } from "./parser";
@@ -339,5 +340,47 @@ describe("text objects (i/a)", () => {
 		expect(run("i").state).toEqual(initialInputState);
 		expect(run("a").command).toBeNull();
 		expect(run("a").state).toEqual(initialInputState);
+	});
+});
+
+describe("isUnsupportedIdleKey", () => {
+	it("is true for a totally unrecognized key pressed while idle (e.g. 'i')", () => {
+		const result = parseKey(initialInputState, "i");
+		expect(isUnsupportedIdleKey(true, result)).toBe(true);
+	});
+
+	it("is false for a valid command (e.g. a bare motion)", () => {
+		const result = parseKey(initialInputState, "l");
+		expect(isUnsupportedIdleKey(true, result)).toBe(false);
+	});
+
+	it("is false for a digit that extends a pending count", () => {
+		const result = parseKey(initialInputState, "3");
+		expect(isUnsupportedIdleKey(true, result)).toBe(false);
+	});
+
+	it("is false for a key that transitions into a pending phase (e.g. 'd')", () => {
+		const result = parseKey(initialInputState, "d");
+		expect(isUnsupportedIdleKey(true, result)).toBe(false);
+	});
+
+	it("is false mid-command, even for the keys df,'s own 'f' and target character consume (never mistaken for an unsupported key)", () => {
+		const afterD = parseKey(initialInputState, "d");
+		const afterDf = parseKey(afterD.state, "f");
+		expect(isUnsupportedIdleKey(false, afterDf)).toBe(false);
+
+		const afterDfComma = parseKey(afterDf.state, ",");
+		expect(isUnsupportedIdleKey(false, afterDfComma)).toBe(false);
+	});
+
+	it("needs wasIdle, not just the result's shape: a pending-phase cancellation (the second 'd' in 'dd') collapses to the exact same {idle, no command, empty count} shape as a genuinely unsupported key", () => {
+		const afterD = parseKey(initialInputState, "d");
+		const cancelled = parseKey(afterD.state, "d");
+		// Same shape as a fresh unsupported key in idle...
+		expect(cancelled.command).toBeNull();
+		expect(cancelled.state).toEqual(initialInputState);
+		// ...but wasIdle correctly reflects that we were operatorPending, not
+		// idle, right before this keystroke, so it's excluded.
+		expect(isUnsupportedIdleKey(false, cancelled)).toBe(false);
 	});
 });

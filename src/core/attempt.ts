@@ -16,6 +16,16 @@ export type Attempt = {
 	// answer" or "chose not to solve this one" (see CLAUDE.md "正誤判定と評価").
 	revealed?: boolean; // round ended via "give up" (answer + explanation shown)
 	skipped?: boolean; // round ended via "skip" (no answer shown)
+	// Carried in directly from the round's own judge verdict at the moment it
+	// ended (see LevelRound.tsx's endRound) - never re-derived later from
+	// keyCount, so challengeStats.ts doesn't need a second "was this Great"
+	// formula that could drift from judge.ts's actual one.
+	great?: boolean;
+	// A clear reached after viewing the answer earlier this app session (see
+	// CLAUDE.md "永続化": 回答閲覧後クリアの扱い) - always paired with
+	// `success: true`, `great: false`. Logged honestly for weak-point
+	// analysis even though it doesn't move challengeStats' clears/greats.
+	assisted?: boolean;
 };
 
 function motionTypeLabel(motion: Motion): string {

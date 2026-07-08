@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useT } from "../i18n/LocaleContext";
 import { fetchStarCount } from "../starCache";
 
-const REPO_URL = "https://github.com/mskasa/vimgram";
+// Exported for MilestoneModal's [s] action, which opens the same repo.
+export const REPO_URL = "https://github.com/mskasa/vimgram";
 
 // Always renders as a working link, even if the star count never loads
 // (offline, GitHub API rate limit, etc.) - see CLAUDE.md "GitHub Star ボタン".

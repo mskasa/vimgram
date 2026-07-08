@@ -16,6 +16,9 @@
 	--accent-soft: #f6d9b4;
 	--success: #9ad6b9;
 	--warn-star: #f2b877;
+	/* Failure-only ("黄昏のローズ") - time's up / gave up. Never used for
+	   anything else (see CLAUDE.md "UI 操作": color meanings stay narrow). */
+	--miss: #e58fb1;
 	--text-primary: #f2efff;
 	--text-body: #c4bde8;
 	--text-secondary: #aaa3d6;
@@ -24,6 +27,10 @@
 	   "UI 操作": accent stays reserved for selected/primary-key/Star/Great).
 	   Used to make the challenge prompt pop without borrowing that meaning. */
 	--text-highlight: #8fe0f2;
+	/* Modal backdrop scrim - --bg-base at reduced opacity (same 24/21/48 RGB),
+	   so the dimmed background stays within the twilight palette instead of a
+	   generic black overlay. */
+	--overlay-scrim: rgba(24, 21, 48, 0.75);
 
 	/* Typography scale, rem-based (16px root). */
 	--font-title: 2.25rem; /* 36px */
@@ -31,6 +38,7 @@
 	--font-card-heading: 1.0625rem; /* 17px */
 	--font-prompt: 1.25rem; /* 20px - the challenge prompt, deliberately louder
 	                           than a card heading since it's what to do right now */
+	--font-verdict: 1.5rem; /* 24px - the result banner's headline (Great!/Clear/...) */
 	--font-body: 0.9375rem; /* 15px */
 	--font-keyhint: 0.875rem; /* 14px */
 	--font-keycap: 0.8125rem; /* 13px */
@@ -46,6 +54,13 @@ body {
 	color: var(--text-primary);
 	font-size: var(--font-body);
 	line-height: 1.7;
+	/* Defense in depth (see CLAUDE.md "UI 操作"): nothing in this app is
+	   meant to scroll horizontally at the page level - every wide/unbounded
+	   region (buffer text, keycap rows, cards inside a grid) scrolls or
+	   wraps within its own box instead. This is a backstop, not the fix
+	   itself - see .vg-stage/.vg-card/.vg-playground-column's min-width: 0
+	   and the code/kbd rule below for the actual root-cause fixes. */
+	overflow-x: hidden;
 }
 
 h1 {
@@ -75,6 +90,16 @@ a {
 code,
 kbd {
 	font-family: monospace;
+	/* A long unbroken run (e.g. a "c..." challenge's inserted text, shown
+	   verbatim in CommandBreakdown/TextChangeCard) must wrap instead of
+	   overflowing its box - and min-width: 0 lets it actually shrink to use
+	   that wrap when it's a flex item (e.g. .vg-breakdown-row's <kbd>),
+	   whose default min-width: auto would otherwise refuse to shrink below
+	   the unwrapped text's width (see CLAUDE.md "UI 操作"). No effect on
+	   ordinary short keycaps/code - min-width only applies to block-level,
+	   inline-block, or flex/grid-item boxes, never to plain inline text. */
+	overflow-wrap: anywhere;
+	min-width: 0;
 }
 
 button {
@@ -163,7 +188,299 @@ button:disabled {
 	color: var(--bg-base);
 }
 
+/* A cluster of keycaps sharing one label (see KeyHint.tsx's "group" item,
+   e.g. the menu's "h/j/k/l 選択") - tighter internal gap than the row's
+   default so the keys visually read as one unit distinct from other hints. */
+.vg-keycap-group {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	color: var(--text-secondary);
+}
+
+.vg-keycap-group > span:last-child {
+	margin-left: 0.15rem;
+}
+
 .vg-keycap:focus-visible {
 	outline: 1px solid var(--border-strong);
 	outline-offset: 2px;
+}
+
+/* Shared card-grid layout (see CLAUDE.md "UI 操作"): the result screen's two
+   detail cards and the level summary's three metric cards both use this -
+   cards wrap to fewer columns once there's no room at their minimum width. */
+.vg-card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 1rem;
+	margin: 1rem 0;
+}
+
+.vg-card {
+	background: var(--bg-card);
+	border: 1px solid var(--border-base);
+	border-radius: 0.5rem;
+	padding: 1rem;
+	/* Lets this shrink below its content's natural width when it's a
+	   flex/grid item (.vg-card-grid, the Playground's toolbox column) - the
+	   default min-width: auto would otherwise let unbroken long text (e.g.
+	   a "c..." challenge's inserted text) force the grid track wider
+	   instead of wrapping/scrolling inside the card (see CLAUDE.md "UI
+	   操作"). No effect where .vg-card isn't a flex/grid item. */
+	min-width: 0;
+}
+
+/* Generic content divider - used both on the result screen (between the
+   cards and the key hints, and inside InputCard) and the play screen's
+   footer (see .vg-footer-row below). */
+.vg-divider {
+	border: none;
+	border-top: 1px solid var(--border-base);
+	margin: 1rem 0;
+}
+
+/* Non-interactive keycap + description rows (see CommandBreakdown.tsx) -
+   shares the .vg-keycap-key look with the clickable KeyHintRow keycaps for a
+   consistent visual language, but these aren't buttons: nothing here fires an
+   action, they just label the command that was typed or expected. */
+.vg-breakdown {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.vg-breakdown-row {
+	display: flex;
+	align-items: baseline;
+	gap: 0.6rem;
+}
+
+/* Play screen "buffer stage" (see CLAUDE.md "UI 操作" and BufferStage.tsx):
+   mode, countdown, and buffer text staged in one card so nothing needs a
+   separate glance elsewhere on the screen. */
+.vg-stage {
+	border: 1px solid var(--border-base);
+	border-radius: 0.75rem;
+	background: var(--bg-card);
+	overflow: hidden;
+	margin: 0.75rem 0;
+	/* Same reasoning as .vg-card above - the Playground places this inside
+	   a grid column, and a long unbroken buffer line (white-space: pre)
+	   must not force that column wider than the grid track. */
+	min-width: 0;
+}
+
+.vg-stage-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.6rem 1rem;
+	border-bottom: 1px solid var(--border-base);
+}
+
+.vg-mode-badge {
+	display: inline-flex;
+	align-items: center;
+	font-size: var(--font-keyhint);
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	padding: 0.25rem 0.75rem;
+	border-radius: 999px;
+	border: 1px solid var(--border-strong);
+	background: var(--bg-key);
+	color: var(--text-secondary);
+}
+
+/* INSERT is the one mode transition worth calling out (see CLAUDE.md "MVP
+   仕様": Insert mode is only reachable via the c operator) - the warm accent
+   makes that transition obvious without adding a 5th use of it. */
+.vg-mode-badge--insert {
+	border-color: var(--accent);
+	background: var(--bg-card-active);
+	color: var(--accent-soft);
+}
+
+/* Stage header's right-side info (see BufferStage.tsx): the countdown in
+   the play screen's "timed" variant, or cursor position + yank register in
+   the Playground's "freeform" variant - same look either way. */
+.vg-stage-info {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.9rem;
+	font-size: var(--font-keyhint);
+	color: var(--text-secondary);
+	font-variant-numeric: tabular-nums;
+}
+
+.vg-stage-body {
+	padding: 1.5rem 1rem;
+}
+
+/* Generic thin progress/remaining-amount bar (see CLAUDE.md "UI 操作":
+   カード類の統計行は下端固定とし、進捗・残量はバーで示す) - shared by the
+   play screen's countdown (BufferStage.tsx) and the menu's level-card clear
+   progress (MenuScreen.tsx), so both read as the same visual language. */
+.vg-bar-track {
+	height: 4px;
+	background: var(--border-base);
+	border-radius: 2px;
+	overflow: hidden;
+}
+
+.vg-bar-fill {
+	height: 100%;
+	background: var(--success);
+	/* Only meaningful where the underlying value ticks over time (the play
+	   countdown) - a static menu progress bar just renders at its final
+	   width with no perceptible transition, since it doesn't change while
+	   mounted. See BufferStage.tsx for why this doesn't imply a second
+	   "clock": the truth is still the per-second `timeLeft` state there. */
+	transition:
+		width 1s linear,
+		background-color 0.3s;
+}
+
+.vg-bar-fill--miss {
+	background: var(--miss);
+}
+
+/* Play screen footer (see CLAUDE.md "UI 操作": 静音フッター) - the same
+   KeyHintRow component, just visually toned down via a locally-scoped
+   --font-keyhint override + reduced opacity, so the shared component itself
+   doesn't need a "quiet" variant. */
+.vg-footer-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	--font-keyhint: 0.8125rem;
+	opacity: 0.85;
+}
+
+.vg-footer-row .vg-keyhint-row {
+	margin: 0;
+}
+
+/* The one remaining standalone button in the app (see CLAUDE.md "UI 操作"
+   のプレイグラウンド例外と同種の意図的な例外): during play, Esc is reserved
+   for Insert-mode exit, so there is no keycap this could duplicate. Styled
+   as a muted text link, not a button, to stay visually quiet. */
+.vg-textlink {
+	all: unset;
+	cursor: pointer;
+	color: var(--text-muted);
+	font-size: var(--font-keyhint);
+}
+
+.vg-textlink:hover,
+.vg-textlink:focus-visible {
+	color: var(--text-secondary);
+	text-decoration: underline;
+}
+
+/* Milestone modal (see CLAUDE.md "永続化": Star 促しはこのモーダルのみ) -
+   the app's first true modal. Keyboard trapping is handled in
+   MilestoneModal.tsx via a capture-phase listener, not by anything here. */
+.vg-modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: var(--overlay-scrim);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1.5rem;
+	z-index: 1000;
+}
+
+.vg-modal {
+	background: var(--bg-card);
+	border: 2px solid var(--accent);
+	border-radius: 0.75rem;
+	padding: 1.5rem;
+	max-width: 26rem;
+	width: 100%;
+}
+
+/* Playground 2-column layout (see CLAUDE.md "UI 操作": プレイグラウンドは
+   左ステージ + 右道具箱の2カラム) - stacks to one column (stage first, by
+   source order) on narrow viewports since there's no room for two
+   280px-plus columns side by side. */
+.vg-playground-grid {
+	display: grid;
+	grid-template-columns: 1.5fr 1fr;
+	gap: 1.5rem;
+	align-items: start;
+}
+
+@media (max-width: 860px) {
+	.vg-playground-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Direct children of .vg-playground-grid (see PlaygroundPage.tsx) - the
+   default grid item min-width: auto would otherwise size each column to
+   fit its widest descendant's unbroken content (e.g. a long buffer line)
+   instead of the grid track, which is the actual root cause of the
+   horizontal layout blowout this guards against (see CLAUDE.md "UI 操作"). */
+.vg-playground-column {
+	min-width: 0;
+}
+
+/* Preset chips (see PlaygroundPage.tsx's text-set card) - pill buttons
+   distinct from the plain Set/Reset buttons, since presets are a set of
+   interchangeable choices rather than a single committing action. */
+.vg-chip {
+	font-family: inherit;
+	font-size: var(--font-keyhint);
+	background: var(--bg-key);
+	color: var(--text-secondary);
+	border: 1px solid var(--border-strong);
+	border-radius: 999px;
+	padding: 0.3rem 0.85rem;
+	cursor: pointer;
+}
+
+.vg-chip:hover,
+.vg-chip:focus-visible {
+	background: var(--border-strong);
+	color: var(--text-primary);
+}
+
+/* Key cheat-sheet tooltip (see KeyCheatSheet.tsx) - hover for mouse, focus
+   for keyboard/tap (a tapped non-button element still receives focus on
+   touch devices), so the tooltip is reachable without a click handler
+   (see CLAUDE.md スコープ外: 早見表からのクリックでコマンド実行はしない). */
+.vg-keycap-tip {
+	all: unset;
+	position: relative;
+	display: inline-flex;
+	cursor: default;
+}
+
+.vg-keycap-tip-bubble {
+	position: absolute;
+	bottom: calc(100% + 0.4rem);
+	left: 50%;
+	transform: translateX(-50%);
+	width: max-content;
+	max-width: 14rem;
+	background: var(--bg-header);
+	color: var(--text-primary);
+	border: 1px solid var(--border-strong);
+	border-radius: 0.375rem;
+	padding: 0.35rem 0.6rem;
+	font-size: var(--font-keyhint);
+	text-align: center;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s;
+	z-index: 10;
+}
+
+.vg-keycap-tip:hover .vg-keycap-tip-bubble,
+.vg-keycap-tip:focus-visible .vg-keycap-tip-bubble {
+	opacity: 1;
 }

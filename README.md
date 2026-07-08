@@ -54,6 +54,16 @@ pnpm tsc --noEmit # typecheck
 pnpm biome check . # lint/format
 ```
 
+`public/favicon.png` and `public/apple-touch-icon.png` are one-time renders of
+`public/favicon.svg` (via `npx sharp-cli`, no permanent dependency) - if the
+source SVG changes, regenerate both with:
+
+```bash
+npx sharp-cli -i public/favicon.svg -o public/favicon.png resize 32 32
+# apple-touch-icon.png uses the same shapes but with rx="0" (no rounded
+# corners) on the background rect, since iOS already rounds the icon itself.
+```
+
 ## Contributing
 
 Adding a challenge takes one JSON file and no TypeScript — see

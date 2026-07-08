@@ -14,6 +14,10 @@ describe("resolveMenuKey", () => {
 		["ArrowLeft", "moveLeft"],
 		["l", "moveRight"],
 		["ArrowRight", "moveRight"],
+		["j", "moveDown"],
+		["ArrowDown", "moveDown"],
+		["k", "moveUp"],
+		["ArrowUp", "moveUp"],
 		["Enter", "select"],
 		["?", "toggleHelp"],
 	] as const)("maps %s to %s", (key, action) => {
@@ -65,6 +69,8 @@ describe("resolveResultKey", () => {
 		["r", "retry"],
 		["R", "retry"],
 		["Escape", "exitToMenu"],
+		["p", "playground"],
+		["P", "playground"],
 	] as const)("maps %s to %s", (key, action) => {
 		expect(resolveResultKey({ key, hasModifier: false })).toBe(action);
 	});
@@ -77,6 +83,7 @@ describe("resolveResultKey", () => {
 		expect(resolveResultKey({ key: "r", hasModifier: true })).toBeNull();
 		expect(resolveResultKey({ key: "Enter", hasModifier: true })).toBeNull();
 		expect(resolveResultKey({ key: "Escape", hasModifier: true })).toBeNull();
+		expect(resolveResultKey({ key: "p", hasModifier: true })).toBeNull();
 	});
 });
 

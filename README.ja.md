@@ -54,6 +54,16 @@ pnpm tsc --noEmit # 型チェック
 pnpm biome check . # lint/format
 ```
 
+`public/favicon.png` と `public/apple-touch-icon.png` は `public/favicon.svg`
+から一度きり書き出した画像です（`npx sharp-cli` を使用、常設の依存追加はなし）。
+元の SVG を変更した場合は以下で再生成してください:
+
+```bash
+npx sharp-cli -i public/favicon.svg -o public/favicon.png resize 32 32
+# apple-touch-icon.png は同じ図形だが、背景の rect の rx を 0（角丸なし）に
+# したもの。iOS 側で角丸が付与されるため。
+```
+
 ## コントリビュート
 
 問題の追加は JSON ファイル1つで、TypeScript を書く必要はありません。

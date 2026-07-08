@@ -259,6 +259,27 @@ function parseCharMotionPending(
 	return { state: initialInputState, command };
 }
 
+// Detects "a totally unrecognized key was pressed while idle" - not a digit
+// extending a count, not a valid command, not a transition into a pending
+// phase (operatorPending/charMotionPending/textObjectPending). The app layer
+// uses this to show a one-off teaching hint instead of doing nothing (see
+// CLAUDE.md "UI 操作") - e.g. a Vim user reflexively pressing "i". `wasIdle`
+// must be the phase *before* this keystroke (from parseIdle only - a key
+// that cancels a pending phase, like the second "d" in "dd", also collapses
+// to `initialInputState` but should NOT trigger this, since mid-command
+// input like `df,`'s "f" or its target character is never "unsupported").
+export function isUnsupportedIdleKey(
+	wasIdle: boolean,
+	result: ParseResult,
+): boolean {
+	return (
+		wasIdle &&
+		result.command === null &&
+		result.state.phase === "idle" &&
+		result.state.countBuffer === ""
+	);
+}
+
 // Drives the state machine over a full key sequence and collects every
 // completed command in order. Used to derive a command breakdown from a
 // challenge's examples[0] (see explain.ts), and mirrors how a real key

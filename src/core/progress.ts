@@ -1,24 +1,5 @@
-import type { Attempt } from "./attempt";
-import { type Challenge, idealKeyCount } from "./challenges";
-
-export type ChallengeProgress = { cleared: boolean; great: boolean };
-
-// Derives progress from the full Attempt history rather than storing it
-// separately - "cleared" is any successful attempt ever recorded, "great"
-// is any successful attempt that used <= idealKeyCount keys (mirrors
-// judge.ts's great/verbose split).
-export function summarizeChallengeProgress(
-	challenge: Challenge,
-	attempts: Attempt[],
-): ChallengeProgress {
-	const successes = attempts.filter(
-		(a) => a.challengeId === challenge.id && a.success,
-	);
-	return {
-		cleared: successes.length > 0,
-		great: successes.some((a) => a.keyCount <= idealKeyCount(challenge)),
-	};
-}
+import type { ChallengeStatsMap } from "./challengeStats";
+import type { Challenge } from "./challenges";
 
 export type LevelProgress = {
 	totalChallenges: number;
@@ -26,30 +7,36 @@ export type LevelProgress = {
 	greatCount: number;
 };
 
+// challengeStats is the source of truth for clear/Great counts (see
+// CLAUDE.md "永続化") - this just aggregates its already-computed per-
+// challenge fields across one level, without re-deriving anything from the
+// raw Attempt log (that log rotates, and re-deriving "Great" from keyCount
+// would risk drifting from judge.ts's own formula).
 export function summarizeLevelProgress(
 	levelChallenges: Challenge[],
-	attempts: Attempt[],
+	stats: ChallengeStatsMap,
 ): LevelProgress {
 	let clearedCount = 0;
 	let greatCount = 0;
 	for (const challenge of levelChallenges) {
-		const progress = summarizeChallengeProgress(challenge, attempts);
-		if (progress.cleared) clearedCount++;
-		if (progress.great) greatCount++;
+		const entry = stats[challenge.id];
+		if (entry && entry.clears > 0) clearedCount++;
+		if (entry && entry.greats > 0) greatCount++;
 	}
 	return { totalChallenges: levelChallenges.length, clearedCount, greatCount };
 }
 
 // A level is "fully cleared" once every challenge in it has at least one
-// successful attempt - the trigger for showing the Star button in the level
-// summary the first time this becomes true (see CLAUDE.md "GitHub Star ボタン").
+// clear - the trigger for showing the Star button in the level summary the
+// first time this becomes true (see CLAUDE.md "GitHub Star ボタン"), and for
+// shuffling the level's order on replay (see CLAUDE.md "シャッフル").
 export function isLevelFullyCleared(
 	levelChallenges: Challenge[],
-	attempts: Attempt[],
+	stats: ChallengeStatsMap,
 ): boolean {
 	const { totalChallenges, clearedCount } = summarizeLevelProgress(
 		levelChallenges,
-		attempts,
+		stats,
 	);
 	return totalChallenges > 0 && clearedCount === totalChallenges;
 }

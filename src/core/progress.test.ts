@@ -1,109 +1,96 @@
 import { describe, expect, it } from "vitest";
-import type { Attempt } from "./attempt";
+import type { ChallengeStats, ChallengeStatsMap } from "./challengeStats";
 import type { Challenge } from "./challenges";
-import {
-	isLevelFullyCleared,
-	summarizeChallengeProgress,
-	summarizeLevelProgress,
-} from "./progress";
+import { isLevelFullyCleared, summarizeLevelProgress } from "./progress";
 
-function makeChallenge(id: string, examples = ["dw"]): Challenge {
+function makeChallenge(id: string): Challenge {
 	return {
 		id,
 		title: { en: id },
 		prompt: { en: id },
 		initial: { text: "hello world", cursor: 0, mode: "normal" },
 		expected: { text: "world" },
-		examples,
+		examples: ["dw"],
 		tags: [],
 		difficulty: 1,
 	};
 }
 
-function makeAttempt(overrides: Partial<Attempt> = {}): Attempt {
+function makeStats(overrides: Partial<ChallengeStats> = {}): ChallengeStats {
 	return {
-		challengeId: "a",
-		input: "dw",
-		success: true,
-		elapsedMs: 1000,
-		keyCount: 2,
-		mistakeCount: 0,
-		usedCommandTypes: ["d:w"],
+		clears: 1,
+		greats: 0,
+		attempts: 1,
+		lastPlayedAt: 1,
+		lastOutcome: "great",
 		...overrides,
 	};
 }
 
-describe("summarizeChallengeProgress", () => {
-	it("is not cleared when there are no attempts", () => {
-		expect(summarizeChallengeProgress(makeChallenge("a"), [])).toEqual({
-			cleared: false,
-			great: false,
-		});
-	});
-
-	it("is cleared but not great when a successful attempt exceeds idealKeyCount", () => {
-		const challenge = makeChallenge("a"); // idealKeyCount = 2 ("dw")
-		const attempts = [makeAttempt({ keyCount: 5 })];
-		expect(summarizeChallengeProgress(challenge, attempts)).toEqual({
-			cleared: true,
-			great: false,
-		});
-	});
-
-	it("is great when a successful attempt is at or under idealKeyCount", () => {
-		const challenge = makeChallenge("a");
-		const attempts = [makeAttempt({ keyCount: 2 })];
-		expect(summarizeChallengeProgress(challenge, attempts)).toEqual({
-			cleared: true,
-			great: true,
-		});
-	});
-
-	it("ignores failed attempts and attempts for other challenges", () => {
-		const challenge = makeChallenge("a");
-		const attempts = [
-			makeAttempt({ challengeId: "a", success: false, keyCount: 2 }),
-			makeAttempt({ challengeId: "b", success: true, keyCount: 2 }),
-		];
-		expect(summarizeChallengeProgress(challenge, attempts)).toEqual({
-			cleared: false,
-			great: false,
-		});
-	});
-});
-
 describe("summarizeLevelProgress", () => {
+	it("counts nothing for challenges with no stats entry at all", () => {
+		const level = [makeChallenge("a")];
+		expect(summarizeLevelProgress(level, {})).toEqual({
+			totalChallenges: 1,
+			clearedCount: 0,
+			greatCount: 0,
+		});
+	});
+
 	it("counts cleared and great challenges across the level", () => {
 		const level = [makeChallenge("a"), makeChallenge("b"), makeChallenge("c")];
-		const attempts = [
-			makeAttempt({ challengeId: "a", keyCount: 2 }), // great
-			makeAttempt({ challengeId: "b", keyCount: 9 }), // cleared, not great
-		];
-		expect(summarizeLevelProgress(level, attempts)).toEqual({
+		const stats: ChallengeStatsMap = {
+			a: makeStats({ clears: 1, greats: 1 }), // great
+			b: makeStats({ clears: 1, greats: 0 }), // cleared, not great
+		};
+		expect(summarizeLevelProgress(level, stats)).toEqual({
 			totalChallenges: 3,
 			clearedCount: 2,
 			greatCount: 1,
+		});
+	});
+
+	it("does not count a challenge with clears: 0 (played but not cleared) as cleared", () => {
+		const level = [makeChallenge("a")];
+		const stats: ChallengeStatsMap = { a: makeStats({ clears: 0, greats: 0 }) };
+		expect(summarizeLevelProgress(level, stats)).toEqual({
+			totalChallenges: 1,
+			clearedCount: 0,
+			greatCount: 0,
 		});
 	});
 });
 
 describe("isLevelFullyCleared", () => {
 	it("is false when the level has no challenges", () => {
-		expect(isLevelFullyCleared([], [])).toBe(false);
+		expect(isLevelFullyCleared([], {})).toBe(false);
 	});
 
-	it("is false until every challenge has a successful attempt", () => {
+	it("is false until every challenge has been cleared at least once", () => {
 		const level = [makeChallenge("a"), makeChallenge("b")];
-		const attempts = [makeAttempt({ challengeId: "a" })];
-		expect(isLevelFullyCleared(level, attempts)).toBe(false);
+		const stats: ChallengeStatsMap = { a: makeStats() };
+		expect(isLevelFullyCleared(level, stats)).toBe(false);
 	});
 
-	it("is true once every challenge has a successful attempt", () => {
+	it("is true once every challenge has been cleared at least once", () => {
 		const level = [makeChallenge("a"), makeChallenge("b")];
-		const attempts = [
-			makeAttempt({ challengeId: "a" }),
-			makeAttempt({ challengeId: "b" }),
-		];
-		expect(isLevelFullyCleared(level, attempts)).toBe(true);
+		const stats: ChallengeStatsMap = { a: makeStats(), b: makeStats() };
+		expect(isLevelFullyCleared(level, stats)).toBe(true);
+	});
+
+	// Attainment (clears/greats) is monotonic and must never rewind based on
+	// proficiency (lastOutcome) - see CLAUDE.md "永続化": 到達度と習熟度の分離.
+	it("stays true even when a challenge's most recent attempt was a failure (lastOutcome ignored entirely)", () => {
+		const level = [makeChallenge("a"), makeChallenge("b")];
+		const stats: ChallengeStatsMap = {
+			a: makeStats({ lastOutcome: "fail" }),
+			b: makeStats({ lastOutcome: "fail" }),
+		};
+		expect(isLevelFullyCleared(level, stats)).toBe(true);
+		expect(summarizeLevelProgress(level, stats)).toEqual({
+			totalChallenges: 2,
+			clearedCount: 2,
+			greatCount: 0,
+		});
 	});
 });
